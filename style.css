@@ -1,0 +1,10 @@
+/**
+* Author: Ashuwp!!!
+* Author url: http://www.ashuwp.com
+* Version: 5.0
+**/
+
+/** 分页样式**/  
+.page_navi{width:100%;height:36px;line-height:36px;text-align:center;overflow:hidden;padding-top:1em;}  
+.page_navi a{padding:3px 8px;margin:2px;text-decoration:none;color:#888;border:1px solid #ccf;}  
+.page_navi a:hover,.page_navi a.current{border:1px solid #356aa0;color:#356aa0;font-weight:bolder;}  
