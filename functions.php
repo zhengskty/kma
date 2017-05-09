@@ -7,6 +7,7 @@
 
 require get_template_directory() . '/framework/ashuwp_framework_core.php'; //加载ashuwp_framework框架
 require get_template_directory() . '/framework/config-example.php'; //加载配置数据，config-example.php为配置范例。
+require_once(TEMPLATEPATH . '/simple-img.php');
 register_nav_menu("top-nav", __("导航菜单", "main"));
 //添加特色缩略图支持
 if ( function_exists('add_theme_support') )add_theme_support('post-thumbnails');
@@ -97,7 +98,7 @@ function wp_catch_first_image($image_size = '') {
 }
 
 
-//输出缩略图地址
+// timthumb输出缩略图地址
 function post_thumbnail_src(){
 	global $post;
 	if( $values = get_post_custom_values("thumbnail") ) { //输出自定义域图片地址
@@ -117,4 +118,71 @@ function post_thumbnail_src(){
 		}
 	};
 	echo $post_thumbnail_src;
+}
+
+// 注册css与js
+function kma_scripts() {
+	// Add custom style, used in the main stylesheet.
+		wp_enqueue_style( 'kma-style', get_stylesheet_uri() );
+	wp_enqueue_style( 'kma-ie', get_template_directory_uri() . '/css/ie.css', array( 'kma-style' ), '20160816' );
+
+}
+add_action( 'wp_enqueue_scripts', 'kma_scripts' );
+
+//调用评论
+function zfunc_comments_users($postid=0,$which=0) {
+ $comments = get_comments('status=approve&type=comment&post_id='.$postid); //获取文章的所有评论
+ if ($comments) {
+ $i=0; $j=0; $commentusers=array();
+ foreach ($comments as $comment) {
+ ++$i;
+ if ($i==1) { $commentusers[] = $comment->comment_author_email; ++$j; }
+ if ( !in_array($comment->comment_author_email, $commentusers) ) {
+ $commentusers[] = $comment->comment_author_email;
+ ++$j;
+ }
+ }
+ $output = array($j,$i);
+ $which = ($which == 0) ? 0 : 1;
+ return $output[$which]; //返回评论人数
+ }
+ return 0; //没有评论返回0
+}
+
+// 为WordPress后台文章列表添加缩略图
+if ( !function_exists('fb_AddThumbColumn') && function_exists('add_theme_support') ) {
+// for post and page
+add_theme_support('post-thumbnails', array( 'post','page' ) );
+function fb_AddThumbColumn($cols) {
+  $cols['thumbnail'] = __('Thumbnail');
+  return $cols;
+}
+function fb_AddThumbValue($column_name, $post_id) {
+  $width = (int) 160;
+  $height = (int) 160;
+  if ( 'thumbnail' == $column_name ) {
+    // thumbnail of WP 2.9
+    $thumbnail_id = get_post_meta( $post_id, '_thumbnail_id', true );
+    // image from gallery
+    $attachments = get_children( array('post_parent' => $post_id, 'post_type' => 'attachment', 'post_mime_type' => 'image') );
+    if ($thumbnail_id)
+      $thumb = wp_get_attachment_image( $thumbnail_id, array($width, $height), true );
+    elseif ($attachments) {
+      foreach ( $attachments as $attachment_id => $attachment ) {
+        $thumb = wp_get_attachment_image( $attachment_id, array($width, $height), true );
+      }
+    }
+    if ( isset($thumb) && $thumb ) {
+      echo $thumb;
+    } else {
+      echo __('None');
+    }
+  }
+}
+// for posts
+add_filter( 'manage_posts_columns', 'fb_AddThumbColumn' );
+add_action( 'manage_posts_custom_column', 'fb_AddThumbValue', 10, 2 );
+// for pages
+add_filter( 'manage_pages_columns', 'fb_AddThumbColumn' );
+add_action( 'manage_pages_custom_column', 'fb_AddThumbValue', 10, 2 );
 }

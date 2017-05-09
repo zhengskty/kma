@@ -1,4 +1,4 @@
-<!– Comment’s List –>   
+<!-- Comment’s List -->   
    <h3>Comments</h3>   
    <div class="hr dotted clearfix">&nbsp;</div>   
    <ol class="commentlist">   
@@ -15,7 +15,7 @@
        </li>   
    </ol>   
    <div class="hr clearfix">&nbsp;</div>   
-   <!– Comment Form –>   
+   <!-- Comment Form -->   
    <form id="comment_form" action="" method="post">   
        <h3>Add a comment</h3>   
        <div class="hr dotted clearfix">&nbsp;</div>   
@@ -37,7 +37,7 @@
                <textarea id="message" name="message" rows="3" cols="40"></textarea>   
            </li>   
            <li class="clearfix">   
-           <!– Add Comment Button –>   
+           <!-- Add Comment Button -->   
            <a type="submit" class="button medium black right">Add comment</a> </li>   
        </ul>   
    </form>  

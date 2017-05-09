@@ -26,29 +26,7 @@
 </article><!-- #post-## -->
 <?php endwhile ; ?>
 <?php endif;?>
-				/*
-				 * Include the Post-Format-specific template for the content.
-				 * If you want to override this in a child theme, then include a file
-				 * called content-___.php (where ___ is the Post Format name) and that will be used instead.
-				 */
-				get_template_part( 'template-parts/content', get_post_format() );
 
-			// End the loop.
-			endwhile;
-
-			// Previous/next page navigation.
-			the_posts_pagination( array(
-				'prev_text'          => __( 'Previous page', 'twentysixteen' ),
-				'next_text'          => __( 'Next page', 'twentysixteen' ),
-				'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'twentysixteen' ) . ' </span>',
-			) );
-
-		// If no content, include the "No posts found" template.
-		else :
-			get_template_part( 'template-parts/content', 'none' );
-
-		endif;
-		?>
 
 		</main><!-- .site-main -->
 	</div><!-- .content-area -->
@@ -74,3 +52,22 @@
 <?php endif;?>
 </div>
 
+
+
+<!-- 调用第一张图片代码 -->
+<a href="<?php the_permalink() ?>"><img src="<?php echo wp_catch_first_image('m'); ?>" alt="" width="200px"  height="200px"></a>
+
+
+
+
+
+<?php 
+    $sticky = get_option('sticky_posts'); 
+    rsort( $sticky );//对数组逆向排序，即大ID在前 
+    $sticky = array_slice( $sticky, 0, 5);//输出置顶文章数，请修改5，0不要动，如果需要全部置顶文章输出，可以把这句注释掉 
+    query_posts( array( 'post__in' => $sticky, 'caller_get_posts' => 1 ) ); 
+    if (have_posts()) :while (have_posts()) : the_post();     
+?> 
+<li><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" rel="bookmark"><?php the_title(); ?></a></li> 
+<?php    endwhile; endif; ?> 
+</ul>
